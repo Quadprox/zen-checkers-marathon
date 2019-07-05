@@ -155,17 +155,17 @@ class Checker:
 
     def move(self, board_position: list):
 
-        # Moving self to a new dictionary position in SURFACE, removing itself from old position:
-        new_row, new_column = board_position
-        old_row, old_column = self.position
-        Board.clear_board_position(self.position)
-        Board.put_checker_on_board_position(self, board_position)
-
         # Removing checker objects between new and old positioins:
         positions_between = Board.get_positions_between(self.position, board_position)
         if positions_between:
             for position in positions_between:
                 Board.clear_board_position(position)
+
+        # Moving self to a new dictionary position in SURFACE, removing itself from old position:
+        new_row, new_column = board_position
+        old_row, old_column = self.position
+        Board.clear_board_position(self.position)
+        Board.put_checker_on_board_position(self, board_position)
 
         # Assigning new position and checking if can promote:
         self.position = board_position
@@ -880,21 +880,6 @@ class Gameshell(arcade.Window):
                 self.active_checker.deselect()
                 self.active_checker = None
         
-        def move_checker(board_position):
-            if self.active_checker.can_attack:
-                self.active_checker.move(click_position)
-                self.board.update()
-                if not self.active_checker.can_attack:
-                    deselect_checker()
-                    clear_highlights()
-                    self.switch_active_player()
-            else:
-                self.active_checker.move(click_position)
-                self.board.update()
-                deselect_checker()
-                clear_highlights()
-                self.switch_active_player()
-
         click_coordinates = [x, y]
         click_position = self.board.convert_coordinates_to_board_position(click_coordinates)
         click_checker = None
@@ -914,7 +899,14 @@ class Gameshell(arcade.Window):
                     if self.player_must_attack():
                         if self.active_checker.can_attack:
                             if click_position in self.active_checker.attack_list:
-                                move_checker(click_position)
+                                self.active_checker.move(click_position)
+                                self.board.update()
+                                if self.active_checker.can_attack:
+                                    pass
+                                else:
+                                    deselect_checker()
+                                    clear_highlights()
+                                    self.switch_active_player()
                             else:
                                 deselect_checker()
                                 force_highlights()
@@ -922,7 +914,11 @@ class Gameshell(arcade.Window):
                             deselect_checker()
                             force_highlights()
                     else:
-                        move_checker(click_position)
+                        self.active_checker.move(click_position)
+                        self.board.update()
+                        deselect_checker()
+                        clear_highlights()
+                        self.switch_active_player()
                 else:
                     deselect_checker()
                     clear_highlights()
