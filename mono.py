@@ -315,7 +315,7 @@ class Checker:
 
     def select(self):
         if not self.selected:
-            self._selected_angle = random.choice((random.randint(-22, -12), random.randint(12, 22)))
+            self._selected_angle = random.choice((random.randint(-45, -23), random.randint(23, 45)))
             self._scale_index = 1.25
             self.selected = True
 
@@ -822,63 +822,58 @@ class Gameshell(arcade.Window):
                 can_move = True
             return can_move
 
-
         clicked_coordinates = [x, y]
-        # if self.ui.mode == 1:
-        if self.board.assert_coordinates_in_board_boundaries(clicked_coordinates):
-            clicked_position = self.board.convert_coordinates_to_board_position(clicked_coordinates)
-            clicked_checker = None
-            if self.board.assert_board_position_is_occupied(clicked_position):
-                clicked_checker = self.board.get_checker_by_board_position(clicked_position)
-            print('\n',self.ui.mode, clicked_coordinates, clicked_position, clicked_checker)
-            if clicked_checker is not None:
-                print(' ', clicked_checker.move_list, clicked_checker.attack_list)
-
-            if self.selected_checker is None:
-                if clicked_checker is None:
-                    hide_highlights()
-                else:
-                    select_checker(clicked_checker)
-                    if can_move_checker(self.selected_checker):
-                        show_selected_checker_options()
-            else:
-                if clicked_checker is None:
-                    if can_move_checker(self.selected_checker):
-                        if self.player_must_attack():
-                            if clicked_position in self.selected_checker.attack_list:
-                                self.selected_checker.move(clicked_position, attacking=True)
-                                self.board.update()
-                                if self.selected_checker.can_attack:
-                                    self.feedback()
-                                else:
-                                    deselect_checker()
-                                    hide_highlights()
-                                    self.switch_player_turn()
-                            else:
-                                deselect_checker()
-                                force_highlights()
-                        else:
-                            if clicked_position in self.selected_checker.move_list:
-                                self.selected_checker.move(clicked_position, attacking=False)
-                                self.board.update()
-                                deselect_checker()
-                                hide_highlights()
-                                self.switch_player_turn()
-                            else:
-                                deselect_checker()
-                                hide_highlights()
-                    else:
-                        deselect_checker()
-                        hide_highlights()
-                else:
-                    if clicked_checker == self.selected_checker:
-                        deselect_checker()
+        if self.ui.mode == 1:
+            if self.board.assert_coordinates_in_board_boundaries(clicked_coordinates):
+                clicked_position = self.board.convert_coordinates_to_board_position(clicked_coordinates)
+                clicked_checker = None
+                if self.board.assert_board_position_is_occupied(clicked_position):
+                    clicked_checker = self.board.get_checker_by_board_position(clicked_position)
+                if self.selected_checker is None:
+                    if clicked_checker is None:
                         hide_highlights()
                     else:
-                        deselect_checker()
                         select_checker(clicked_checker)
                         if can_move_checker(self.selected_checker):
                             show_selected_checker_options()
+                else:
+                    if clicked_checker is None:
+                        if can_move_checker(self.selected_checker):
+                            if self.player_must_attack():
+                                if clicked_position in self.selected_checker.attack_list:
+                                    self.selected_checker.move(clicked_position, attacking=True)
+                                    self.board.update()
+                                    if self.selected_checker.can_attack:
+                                        self.feedback()
+                                    else:
+                                        deselect_checker()
+                                        hide_highlights()
+                                        self.switch_player_turn()
+                                else:
+                                    deselect_checker()
+                                    force_highlights()
+                            else:
+                                if clicked_position in self.selected_checker.move_list:
+                                    self.selected_checker.move(clicked_position, attacking=False)
+                                    self.board.update()
+                                    deselect_checker()
+                                    hide_highlights()
+                                    self.switch_player_turn()
+                                else:
+                                    deselect_checker()
+                                    hide_highlights()
+                        else:
+                            deselect_checker()
+                            hide_highlights()
+                    else:
+                        if clicked_checker == self.selected_checker:
+                            deselect_checker()
+                            hide_highlights()
+                        else:
+                            deselect_checker()
+                            select_checker(clicked_checker)
+                            if can_move_checker(self.selected_checker):
+                                show_selected_checker_options()
     
     def update(self, delta_time):
         pass
