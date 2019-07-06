@@ -236,8 +236,6 @@ class Board:
                         checker.update()
 
     def display(self):
-
-        # If texture is uploaded and ready:
         if self._texture is not None:
             arcade.draw_texture_rectangle(
                 center_x=self.BOARD_POSITION_X,
@@ -248,56 +246,6 @@ class Board:
                 angle=0,
                 alpha=255,
             )
-
-        # Else, render surface using primitive shapes:
-        else:
-            
-            # Rendering outer margin:
-            arcade.draw_rectangle_filled(
-                center_x=self.BOARD_POSITION_X,
-                center_y=self.BOARD_POSITION_Y,
-                width=self.BOARD_SIDE_LEN,
-                height=self.BOARD_SIDE_LEN,
-                color=self.MARGIN_OUTER_COLOR,
-            )
-
-            # Rendering inner margin:
-            arcade.draw_rectangle_filled(
-                center_x=self.BOARD_POSITION_X,
-                center_y=self.BOARD_POSITION_Y,
-                width=float(self.BOARD_SIDE_LEN - self.MARGIN_OUTER_LEN * 2),
-                height=float(self.BOARD_SIDE_LEN - self.MARGIN_OUTER_LEN * 2),
-                color=self.MARGIN_INNER_COLOR
-            )
-
-            # Rendering tiles:
-            tile_coord_x = int(self.MARGIN_LEN + self.TILE_SIDE_LEN / 2)
-            tile_coord_y = int(self.MARGIN_LEN + self.TILE_SIDE_LEN / 2)
-            tile_color = self.TILE_COLOR_LIGHT
-            for vertical_tile in range(0, self.TILE_COUNT_PER_ROW):
-                for horisontal_tile in range(0, self.TILE_COUNT_PER_COLUMN):
-                    if tile_color == self.TILE_COLOR_DARK:
-                        arcade.draw_rectangle_filled(
-                            center_x=tile_coord_x,
-                            center_y=tile_coord_y,
-                            width=self.TILE_SIDE_LEN,
-                            height=self.TILE_SIDE_LEN,
-                            color=tile_color
-                        )
-                    tile_coord_x += self.TILE_SIDE_LEN
-                    tile_color = self.TILE_COLOR_LIGHT if tile_color == self.TILE_COLOR_DARK else self.TILE_COLOR_DARK
-                tile_coord_x = int(self.MARGIN_LEN + self.TILE_SIDE_LEN / 2)
-                tile_coord_y += self.TILE_SIDE_LEN
-                tile_color = self.TILE_COLOR_LIGHT if tile_color == self.TILE_COLOR_DARK else self.TILE_COLOR_DARK
-                
-            # Rendering letter index:
-            # TODO: Write script to render letter index on margins
-            pass
-
-            # Rendering number index:
-            # TODO: Write script to render number index on margins
-            pass
-
 
     def display_checkers(self):
         if SURFACE_SET:
@@ -398,10 +346,7 @@ class Checker:
         self._texture = texture_object
     
     def display(self):
-
         coord_x, coord_y = self.coordinates
-
-        # If texture is uploaded and ready:
         if self._texture is not None:
             arcade.draw_texture_rectangle(
                 center_x=coord_x,
@@ -413,50 +358,6 @@ class Checker:
                 alpha=255
             )
         
-        # Else, render surface using primitive shapes:
-        else:
-
-            # Rendering outer radius:
-            arcade.draw_circle_filled(
-                center_x=coord_x + 2,
-                center_y=coord_y + 1,
-                radius=self.RADIUS_OUTER,
-                color=self.COLOR_WHITE_ALT if self.color == 'White' else
-                      self.COLOR_BLACK_ALT if self.color == 'Black' else
-                      self.COLOR_ERROR,
-                num_segments=64
-            )
-            arcade.draw_circle_filled(
-                center_x=coord_x - 2,
-                center_y=coord_y - 1,
-                radius=self.RADIUS_OUTER,
-                color=self.COLOR_WHITE_MAIN if self.color == 'White' else
-                      self.COLOR_BLACK_MAIN if self.color == 'Black' else
-                      self.COLOR_ERROR,
-                num_segments=64
-            )
-
-            # Rendering inner radius:
-            arcade.draw_circle_filled(
-                center_x=coord_x - 2,
-                center_y=coord_y - 1,
-                radius=self.RADIUS_INNER,
-                color=self.COLOR_WHITE_ALT if self.color == 'White' else
-                      self.COLOR_BLACK_ALT if self.color == 'Black' else
-                      self.COLOR_ERROR,
-                num_segments=64
-            )
-            arcade.draw_circle_filled(
-                center_x=coord_x + 2,
-                center_y=coord_y + 1,
-                radius=self.RADIUS_INNER,
-                color=self.COLOR_WHITE_MAIN if self.color == 'White' else
-                      self.COLOR_BLACK_MAIN if self.color == 'Black' else
-                      self.COLOR_ERROR,
-                num_segments=64
-            )
-            
-
     def look(self):
         self.move_list = []
         self.attack_list = []
